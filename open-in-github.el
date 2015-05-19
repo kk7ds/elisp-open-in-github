@@ -25,6 +25,13 @@
 			project
 			"/tree/master"
 			repopath
-			"#L" (number-to-string (+ (count-lines 1 (point)) 1))))))
+			(get-range)))))
+
+(defun get-range ()
+  (let ((one (count-lines 1 (point)))
+	(two (count-lines 1 (+ 1 (mark)))))
+    (concat "#L" (number-to-string (min one two))
+	    "-" (number-to-string (max one two)))))
+
 
 (provide 'open-in-github)
