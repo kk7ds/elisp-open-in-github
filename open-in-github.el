@@ -17,13 +17,17 @@
     (search-forward-regexp "^project=")
     (substring (buffer-substring-no-properties (point) (line-end-position)) 0 -4)))
 
+(defun get-git-hash (gitpath)
+  (substring (shell-command-to-string "git rev-parse HEAD") 0 40))
+
 (defun open-in-github ()
   (interactive)
   (let ((repopath (get-git-suffix (buffer-file-name)))
 	(project (get-project-name (concat (get-git-root (buffer-file-name)) "/.git"))))
-    (browse-url (concat "http://github.org/"
+    (browse-url (concat "http://github.com/"
 			project
-			"/tree/master"
+			"/tree/"
+                        (get-git-hash project)
 			repopath
 			(get-range)))))
 
@@ -31,7 +35,7 @@
   (let ((one (count-lines 1 (point)))
 	(two (count-lines 1 (+ 1 (mark)))))
     (concat "#L" (number-to-string (min one two))
-	    "-" (number-to-string (max one two)))))
+	    "-L" (number-to-string (max one two)))))
 
 
 (provide 'open-in-github)
